@@ -1,0 +1,40 @@
+azure:
+  activedirectory:
+    # Specifies your Active Directory ID:
+    tenant-id: <tenantid>
+    # Specifies your App Registration's Application ID:
+    client-id: <clientid>
+    # Specifies your App Registration's secret key:
+    client-secret: <clientsecret>
+    # Specifies the post-log-out-redirect-uri, where to return your app after logout.
+    post-logout-redirect-uri: http://localhost:8080
+    # Specifies the Microsoft Graph scopes that your app needs access to - not required in this app.
+    # authorization-clients:
+    #   graph:
+    #     scopes: https://graph.microsoft.com/User.Read
+
+# which routes to restrict to authenticated users only (see SecurityConfig.java):
+# enter String array (comma-separated) or just one route.
+# e.g. authenticated: /route1, /route2, /route3
+app:
+  protect:
+    authenticated: /token_details
+
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          azure-ad:
+            authorization-uri: https://login.microsoftonline.com/<tenantid>/oauth2/v2.0/authorize
+            token-uri: https://login.microsoftonline.com/<tenantid>/oauth2/v2.0/token
+            jwk-set-uri: https://login.microsoftonline.com/<tenantid>/discovery/v2.0/keys
+        registration:
+          azure-client:
+            provider: azure-ad
+            client-id: '<clientid>'
+            client-secret: '<clientsecret>'
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/'
+            scope: openid,profile
